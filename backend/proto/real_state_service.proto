@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+service RealStateService{
+    rpc add (State) returns (State);
+    rpc update(State) returns (State);
+    rpc find(StateId) returns (State);
+    rpc find_all(StateId) returns (StateList);
+    rpc remove(StateId) returns (State);
+}
+
+enum StateType{
+    HOUSE = 0;
+    APARTMENT = 1;
+}
+
+message StateId {
+    int32 value = 0;
+}
+
+message StateList{
+    repeated State states = 0;
+}
+
+message State{
+    optional StateId id = 0;
+    string title = 1;
+    string address = 2;
+    StateType state_type = 3;
+    uint32 bedroom_count = 4;
+    uint32 carage_count = 5;
+    float build_area = 6;
+    float terrain_area = 7;
+    float price = 8;
+}
