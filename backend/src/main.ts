@@ -4,29 +4,32 @@ import RealStateRepository from "./repository/RealStateRepository";
 
 const PROTO_PATH = "./proto/real_state_service.proto";
 
-const realStateRepository = new RealStateRepository();
+function loadProto(): any {
+    const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+        keepCase: true,
+        longs: String,
+        enums: String,
+        defaults: true,
+        oneofs: true,
+    });
+    return grpc.loadPackageDefinition(packageDefinition);
+}
 
-console.log(grpc);
+function createServer(): grpc.Server {
+    const RealStateProto = loadProto();
+    const realStateRepository = new RealStateRepository();
+    const server = new grpc.Server();
+    server.addService(RealStateProto.RealStateService.service, {
+        add(call: any, callback: any) {
+            callback(null, realStateRepository.add(call.request));
+        },
+    });
+    return server;
+}
 
-const packageDefinition = protoLoader.loadSync(PROTO_PATH);
-const RealStateProto: any = grpc.loadPackageDefinition(packageDefinition);
-
-const server = new grpc.Server();
-
-server.addService(RealStateProto.RealStateService.service, {
-    add(state: any, callback: any) {
-        realStateRepository.add(state).then((s) => callback(null, s));
-    },
-});
-
+const server = createServer();
 server.bindAsync(
-    "0.0.0.0:8080",
+    "192.168.2.7:888",
     grpc.ServerCredentials.createInsecure(),
-    (error, port) => {
-        if (error) {
-            console.error(error);
-        } else {
-            console.log("server running on port " + port);
-        }
-    }
+    () => server.start()
 );
