@@ -1,35 +1,24 @@
 import grpc = require("@grpc/grpc-js");
-import protoLoader = require("@grpc/proto-loader");
-import RealStateRepository from "./repository/RealStateRepository";
-
-const PROTO_PATH = "./proto/real_state_service.proto";
-
-function loadProto(): any {
-    const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
-        keepCase: true,
-        longs: String,
-        enums: String,
-        defaults: true,
-        oneofs: true,
-    });
-    return grpc.loadPackageDefinition(packageDefinition);
-}
+import { realStateProto } from "./proto/RealStateProto";
+import { realStateService } from "./dependencies";
+import { HOST, PORT } from "./env";
 
 function createServer(): grpc.Server {
-    const RealStateProto = loadProto();
-    const realStateRepository = new RealStateRepository();
     const server = new grpc.Server();
-    server.addService(RealStateProto.RealStateService.service, {
-        add(call: any, callback: any) {
-            callback(null, realStateRepository.add(call.request));
-        },
-    });
+    server.addService(
+        realStateProto.RealStateService.service,
+        realStateService as any
+    );
     return server;
 }
 
-const server = createServer();
-server.bindAsync(
-    "192.168.2.7:888",
+const socketAddress = HOST + ":" + PORT;
+const grpcServer = createServer();
+grpcServer.bindAsync(
+    socketAddress,
     grpc.ServerCredentials.createInsecure(),
-    () => server.start()
+    (_error, _port) => {
+        grpcServer.start();
+        console.log("server running at " + socketAddress);
+    }
 );

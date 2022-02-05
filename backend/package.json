@@ -10,7 +10,8 @@
     "license": "ISC",
     "dependencies": {
         "@grpc/grpc-js": "^1.5.4",
-        "@grpc/proto-loader": "^0.6.9"
+        "@grpc/proto-loader": "^0.6.9",
+        "dotenv": "^16.0.0"
     },
     "devDependencies": {
         "@tsconfig/recommended": "^1.0.1",

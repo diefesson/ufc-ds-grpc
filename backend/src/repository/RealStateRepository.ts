@@ -7,13 +7,14 @@ class RealStateRepository {
         this.states = [];
     }
 
-    async add(state: any) {
+    add(state: any) {
         var id = this.currentId++;
         state.id = id;
         this.states.push(state);
+        return state;
     }
 
-    async update(state: any) {
+    update(state: any) {
         const index = this.states.findIndex((s) => state.id == s.id);
         if (index == -1) {
             return null;
@@ -22,18 +23,19 @@ class RealStateRepository {
         return state;
     }
 
-    async find(id: number) {
-        const state = this.states.find((s) => s.id == id);
-        return state;
+    find(id: number) {
+        return this.states.find((s) => s.id == id);
     }
 
-    async findAll() {
+    findAll() {
+        console.log(this.states);
         return this.states;
     }
 
-    async remove(id: number) {
+    remove(id: number) {
         const index = this.states.findIndex((s) => s.id == id);
-        if (id == -1) {
+        console.log(index); //TODO: remove me
+        if (index == -1) {
             return null;
         }
         const [state] = this.states.splice(index, 1);

@@ -1,11 +1,13 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 service RealStateService{
     rpc add (State) returns (State);
     rpc update(State) returns (State);
-    rpc find(StateId) returns (State);
-    rpc find_all(StateId) returns (StateList);
-    rpc remove(StateId) returns (State);
+    rpc find(IdRequest) returns (State);
+    rpc find_all(google.protobuf.Empty) returns (StateList);
+    rpc remove(IdRequest) returns (State);
 }
 
 enum StateType{
@@ -13,8 +15,8 @@ enum StateType{
     APARTMENT = 1;
 }
 
-message StateId {
-    int32 value = 0;
+message IdRequest {
+    int32 id = 0;
 }
 
 message StateList{
@@ -22,7 +24,7 @@ message StateList{
 }
 
 message State{
-    optional StateId id = 0;
+    optional uint32 id = 0;
     string title = 1;
     string address = 2;
     StateType state_type = 3;
