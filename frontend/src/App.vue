@@ -1,26 +1,35 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <div v-for="state in states" v-bind:key="state.id">{{ state.title }}</div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+const api = window.api;
+
+console.log(api);
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+  data: () => ({
+    states: [{ id: 4, title: "algo" }],
+  }),
+  methods: {
+    async updateList() {
+      api.findAll((error, response) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log(response);
+          this.states = response.states;
+        }
+      });
+    },
+  },
+  mounted() {
+    this.updateList();
+  },
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style></style>
