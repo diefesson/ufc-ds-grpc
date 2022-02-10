@@ -1,3 +1,6 @@
 {
-    "extends": "default-with-typescript"
+    "extends": "default-with-typescript",
+    "rules": {
+        "prettier/prettier": "warn"
+    }
 }
