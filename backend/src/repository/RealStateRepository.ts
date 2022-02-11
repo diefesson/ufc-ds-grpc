@@ -28,13 +28,11 @@ class RealStateRepository {
     }
 
     findAll() {
-        console.log(this.states);
         return this.states;
     }
 
     remove(id: number) {
         const index = this.states.findIndex((s) => s.id == id);
-        console.log(index); //TODO: remove me
         if (index == -1) {
             return null;
         }

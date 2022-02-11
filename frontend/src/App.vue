@@ -1,13 +1,41 @@
 <template>
-  <div>
-    <div v-for="state in states" v-bind:key="state.id">{{ state.title }}</div>
+  <div class="list">
+    <span>Imoveis</span>
+    <div class="item" v-for="state in states" v-bind:key="state.id">
+      <button class="remove-button" v-on:click="onRemove(state.id)">
+        deletar
+      </button>
+      <span>{{ state.id }}</span>
+      <span>{{ state.title }}</span>
+    </div>
   </div>
 </template>
 
+<style scoped>
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  padding: 10px;
+  background-color: lightgrey;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  gap: 5px;
+}
+
+.remove-button {
+  color: white;
+  background-color: red;
+  border-radius: 5px;
+}
+</style>
+
 <script>
 const api = window.api;
-
-console.log(api);
 
 export default {
   name: "App",
@@ -20,9 +48,19 @@ export default {
         if (error) {
           console.error(error);
         } else {
-          console.log(response);
+          console.log("updateList", response);
           this.states = response.states;
         }
+      });
+    },
+    async onRemove(id) {
+      api.remove({ id }, (error, response) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log("remove", response);
+        }
+        this.updateList();
       });
     },
   },
